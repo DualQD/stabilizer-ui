@@ -1,0 +1,6 @@
+#!/home/dualqd/artiq-files/stabilizer-control-DualQD/stabilizer-ui/.venv/bin/python
+import sys
+from stabilizer_ui.target.l674.app import main
+
+if __name__ == '__main__':
+    sys.exit(main())
