@@ -18,7 +18,7 @@ Apart from these base parameters, each application may define additional paramet
 
 from .mqtt import NetworkAddress
 
-broker = NetworkAddress.from_str_ip("192.168.1.171", 1883)
+broker = NetworkAddress.from_str_ip("192.168.1.138", 1883)
 #wand_lab1 = NetworkAddress.from_str_ip("10.255.6.61", 3251)
 
 stabilizer_devices = {}
@@ -38,13 +38,9 @@ stabilizer_devices = {}
 #}
 
 stabilizer_devices["stabilizer1"] = {
-    "mac-address": "fc-0f-e7-35-17-4f",
+    "mac-address": "fc-0f-e7-34-dd-d6",
     "application": "dual_iir",
     "broker": broker,
 }
 
-stabilizer_devices["fnc"] = {
-    "mac-address": "fc-0f-e7-34-fb-ff",
-    "application": "fnc",
-    "broker": broker,
-}
+
