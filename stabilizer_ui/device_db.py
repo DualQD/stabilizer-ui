@@ -9,7 +9,7 @@ Accepted format:
 <logical_name>: {
     "mac-address": str              # The MAC address of the device
     "application": str,             # The application the device is running; in ["fnc", "dual_iir", "l674"]
-    "broker": NetworkAddress,       # The IP address and connection port of the MQTT broker
+    "broker": NetworkAddress,       # The hostname/IP address and port of the MQTT broker
     "net_id": str, optional         # The MQTT topic of the stabilizer, if different from the MAC address. Needs to match flash settings on the device.
 }
 
@@ -18,7 +18,7 @@ Apart from these base parameters, each application may define additional paramet
 
 from .mqtt import NetworkAddress
 
-broker = NetworkAddress.from_str_ip("192.168.1.138", 1883)
+broker = NetworkAddress.from_hostname("lab-pc.internal", 1883)
 #wand_lab1 = NetworkAddress.from_str_ip("10.255.6.61", 3251)
 
 stabilizer_devices = {}
@@ -43,4 +43,8 @@ stabilizer_devices["stabilizer1"] = {
     "broker": broker,
 }
 
-
+stabilizer_devices["fnc"] = {
+    "mac-address": "fc-0f-e7-34-fb-ff",
+    "application": "fnc",
+    "broker": broker,
+}

@@ -5,7 +5,7 @@ import logging
 import json
 import uuid
 
-from typing import NamedTuple, List, Callable, Any, Dict, Optional
+from typing import NamedTuple, Callable, Any, Dict, Optional
 from contextlib import suppress
 from PyQt6 import QtWidgets
 from gmqtt import Client as MqttClient, Message as MqttMessage
@@ -126,20 +126,39 @@ class MqttInterface:
 
 
 class NetworkAddress(NamedTuple):
-    ip: List[int]
+    # Accept both the original list representation (e.g. [192, 168, 1, 138])
+    # and string hosts (IPv4/IPv6 addresses or DNS hostnames).
+    ip: object
     port: int = 9293
 
     @classmethod
     def from_str_ip(cls, ip: str, port: int):
-        _ip = list(map(int, ip.split(".")))
-        return cls(_ip, port)
+        # Preserve the original stabilizer-ui representation for numeric IPv4
+        # addresses because stream settings are serialized using _asdict().
+        try:
+            octets = list(map(int, ip.split(".")))
+            if len(octets) == 4 and all(0 <= octet <= 255 for octet in octets):
+                return cls(octets, port)
+        except ValueError:
+            pass
+
+        # A non-IPv4 string is treated as a hostname (or other string host).
+        return cls(ip, port)
+
+    @classmethod
+    def from_hostname(cls, hostname: str, port: int):
+        return cls(hostname, port)
 
     def get_ip(self) -> str:
-        return ".".join(map(str, self.ip))
+        # Convert the legacy list/tuple representation to the normal dotted
+        # string expected by sockets and stabilizer.stream.StabilizerStream.
+        if isinstance(self.ip, (list, tuple)):
+            return ".".join(map(str, self.ip))
+        return str(self.ip)
 
     def is_unspecified(self):
-        """Mirrors `smoltcp::wire::IpAddress::is_unspecified` in Rust, for IPv4 addresses"""
-        return self.ip == [0, 0, 0, 0]
+        """Mirrors the unspecified IPv4 address check for both representations."""
+        return self.get_ip() in ("0.0.0.0", "")
 
 
 NetworkAddress.UNSPECIFIED = NetworkAddress([0, 0, 0, 0], 0)
