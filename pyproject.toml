@@ -11,7 +11,7 @@ python = "^3.12"
 qasync = "^0.27.1"
 websockets = "^15.0.1"
 pyqtgraph = "^0.13.7"
-numpy = "^2.2.5"
+numpy = "1.26.4"
 gmqtt = "^0.7.0"
 pyqt6 = "^6.9.0"
 
